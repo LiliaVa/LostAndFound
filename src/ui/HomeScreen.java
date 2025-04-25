@@ -11,6 +11,9 @@ import javax.swing.border.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.List;
+import javax.imageio.ImageIO;
+import java.io.File;
+import java.io.IOException;
 
 
 public class HomeScreen extends JPanel {
@@ -234,36 +237,31 @@ public class HomeScreen extends JPanel {
 
 
     public void refreshData() {
-
         if (parent.getCurrentUser() != null) {
             welcomeLabel.setText("Welcome, " + parent.getCurrentUser().getName() + "!");
         }
 
-
         recentItemsPanel.removeAll();
-
 
         LostItemDAO lostItemDAO = new LostItemDAO();
         List<LostItem> recentLostItems = lostItemDAO.getAllLostItems();
 
-
         FoundItemDAO foundItemDAO = new FoundItemDAO();
         List<FoundItem> recentFoundItems = foundItemDAO.getAllFoundItems();
 
-
         for (int i = 0; i < Math.min(3, recentLostItems.size()); i++) {
             LostItem item = recentLostItems.get(i);
+            ImageIcon icon = getItemImage(item.getImagePath());
             recentItemsPanel.add(createItemCard(item.getTitle(), item.getLocation(),
-                    "Lost on " + item.getFormattedDate(), true));
+                    "Lost on " + item.getFormattedDate(), true, icon));
         }
-
 
         for (int i = 0; i < Math.min(3, recentFoundItems.size()); i++) {
             FoundItem item = recentFoundItems.get(i);
+            ImageIcon icon = getItemImage(item.getImagePath());
             recentItemsPanel.add(createItemCard(item.getTitle(), item.getLocation(),
-                    "Found on " + item.getFormattedDate(), false));
+                    "Found on " + item.getFormattedDate(), false, icon));
         }
-
 
         if (recentLostItems.isEmpty() && recentFoundItems.isEmpty()) {
             JLabel noItemsLabel = new JLabel("No recent items to display");
@@ -272,52 +270,53 @@ public class HomeScreen extends JPanel {
             recentItemsPanel.add(noItemsLabel);
         }
 
-
         recentItemsPanel.revalidate();
         recentItemsPanel.repaint();
-
 
         setupSearchHandler();
     }
 
 
-    private JPanel createItemCard(String title, String location, String dateInfo, boolean isLost) {
+    private JPanel createItemCard(String title, String location, String dateInfo, boolean isLost, ImageIcon imageIcon) {
 
         JPanel card = new JPanel();
         card.setLayout(new BoxLayout(card, BoxLayout.Y_AXIS));
         card.setBackground(CARD_COLOR);
-
 
         Border lineBorder = BorderFactory.createLineBorder(Color.LIGHT_GRAY, 1);
         Border emptyBorder = BorderFactory.createEmptyBorder(10, 10, 10, 10);
         Border compoundBorder = BorderFactory.createCompoundBorder(lineBorder, emptyBorder);
         card.setBorder(compoundBorder);
 
+        // 🔹 Image section
+        if (imageIcon != null) {
+            Image img = imageIcon.getImage().getScaledInstance(200, 150, Image.SCALE_SMOOTH);
+            JLabel imageLabel = new JLabel(new ImageIcon(img));
+            imageLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+            card.add(imageLabel);
+            card.add(Box.createVerticalStrut(10));
+        }
 
         JLabel statusLabel = new JLabel(isLost ? "LOST" : "FOUND");
         statusLabel.setForeground(isLost ? LOST_COLOR : FOUND_COLOR);
         statusLabel.setFont(new Font("Arial", Font.BOLD, 14));
         statusLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-
         JLabel titleLabel = new JLabel(title);
         titleLabel.setFont(new Font("Arial", Font.BOLD, 16));
         titleLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-
         JPanel locationPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
         locationPanel.setOpaque(false);
-        JLabel locationIcon = new JLabel("📍");
+        JLabel locationIcon = new JLabel(" ");
         JLabel locationLabel = new JLabel(location);
         locationPanel.add(locationIcon);
         locationPanel.add(locationLabel);
         locationPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-
         JLabel dateLabel = new JLabel(dateInfo);
         dateLabel.setFont(new Font("Arial", Font.ITALIC, 12));
         dateLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-
 
         card.add(Box.createVerticalStrut(5));
         card.add(statusLabel);
@@ -328,7 +327,6 @@ public class HomeScreen extends JPanel {
         card.add(Box.createVerticalStrut(5));
         card.add(dateLabel);
         card.add(Box.createVerticalStrut(5));
-
 
         card.addMouseListener(new MouseAdapter() {
             @Override
@@ -356,7 +354,20 @@ public class HomeScreen extends JPanel {
     }
 
 
+
     public void addEnhancements() {
 
+    }
+
+    private ImageIcon getItemImage(String path) {
+        if (path != null && !path.isEmpty()) {
+            try {
+                Image image = ImageIO.read(new File(path));
+                return new ImageIcon(image);
+            } catch (IOException e) {
+                System.err.println("Could not load image: " + path);
+            }
+        }
+        return null;
     }
 }
