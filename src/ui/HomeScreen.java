@@ -251,14 +251,14 @@ public class HomeScreen extends JPanel {
 
         for (int i = 0; i < Math.min(3, recentLostItems.size()); i++) {
             LostItem item = recentLostItems.get(i);
-            ImageIcon icon = getItemImage(item.getImagePath());
+            ImageIcon icon = getItemImageFromBytes(item.getImage());
             recentItemsPanel.add(createItemCard(item.getTitle(), item.getLocation(),
                     "Lost on " + item.getFormattedDate(), true, icon));
         }
 
         for (int i = 0; i < Math.min(3, recentFoundItems.size()); i++) {
             FoundItem item = recentFoundItems.get(i);
-            ImageIcon icon = getItemImage(item.getImagePath());
+            ImageIcon icon = getItemImageFromBytes(item.getImage());
             recentItemsPanel.add(createItemCard(item.getTitle(), item.getLocation(),
                     "Found on " + item.getFormattedDate(), false, icon));
         }
@@ -359,13 +359,13 @@ public class HomeScreen extends JPanel {
 
     }
 
-    private ImageIcon getItemImage(String path) {
-        if (path != null && !path.isEmpty()) {
+    private ImageIcon getItemImageFromBytes(byte[] imageBytes) {
+        if (imageBytes != null && imageBytes.length > 0) {
             try {
-                Image image = ImageIO.read(new File(path));
+                Image image = ImageIO.read(new java.io.ByteArrayInputStream(imageBytes));
                 return new ImageIcon(image);
             } catch (IOException e) {
-                System.err.println("Could not load image: " + path);
+                System.err.println("Could not read image bytes.");
             }
         }
         return null;
