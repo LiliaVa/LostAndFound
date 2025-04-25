@@ -5,9 +5,12 @@ import model.FoundItem;
 import util.DateUtils;
 import util.UIUtils;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.util.List;
 import javax.swing.border.TitledBorder;
 import javax.swing.table.*;
@@ -357,6 +360,7 @@ public class FoundItemScreen extends JPanel {
         details.append("Location: ").append(item.getLocation()).append("\n\n");
         details.append("Description: ").append(item.getDescription()).append("\n");
 
+        // Text area with item details
         JTextArea textArea = new JTextArea(details.toString());
         textArea.setEditable(false);
         textArea.setLineWrap(true);
@@ -368,7 +372,7 @@ public class FoundItemScreen extends JPanel {
         JScrollPane scrollPane = new JScrollPane(textArea);
         scrollPane.setPreferredSize(new Dimension(400, 300));
 
-
+        // Buttons
         JButton editButton = UIUtils.createStyledButton("Edit", new Color(255, 140, 0));
         JButton deleteButton = UIUtils.createStyledButton("Delete", new Color(220, 20, 60));
         JButton closeButton = UIUtils.createStyledButton("Close", new Color(70, 130, 180));
@@ -379,17 +383,37 @@ public class FoundItemScreen extends JPanel {
         buttonPanel.add(deleteButton);
         buttonPanel.add(closeButton);
 
+        // Image section
+        JLabel imageLabel = new JLabel();
+        byte[] imageBytes = item.getImage();
+        if (imageBytes != null && imageBytes.length > 0) {
+            try {
+                Image image = ImageIO.read(new ByteArrayInputStream(imageBytes));
+                Image scaled = image.getScaledInstance(200, 150, Image.SCALE_SMOOTH);
+                imageLabel.setIcon(new ImageIcon(scaled));
+            } catch (IOException e) {
+                System.err.println("Could not read image bytes.");
+                imageLabel.setText("Image not available");
+            }
+        } else {
+            imageLabel.setText("No image available");
+        }
+        imageLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        imageLabel.setBorder(BorderFactory.createEmptyBorder(10, 10, 0, 10));
+
+        // Assemble dialog content
         JPanel contentPanel = new JPanel(new BorderLayout(0, 10));
         contentPanel.setBackground(new Color(250, 250, 255));
+        contentPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        contentPanel.add(imageLabel, BorderLayout.NORTH);
         contentPanel.add(scrollPane, BorderLayout.CENTER);
         contentPanel.add(buttonPanel, BorderLayout.SOUTH);
-        contentPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
+        // Dialog
         JDialog dialog = new JDialog();
         dialog.setTitle("Found Item Details");
         dialog.setModal(true);
         dialog.setContentPane(contentPanel);
-
 
         closeButton.addActionListener(e -> dialog.dispose());
 
@@ -407,6 +431,7 @@ public class FoundItemScreen extends JPanel {
         dialog.setLocationRelativeTo(this);
         dialog.setVisible(true);
     }
+
 
 
     public void refreshData() {
