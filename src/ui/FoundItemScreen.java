@@ -169,7 +169,7 @@ public class FoundItemScreen extends JPanel {
 
     private void createItemTable() {
 
-        String[] columnNames = {"ID", "Item Name", "Location", "Date Found", "Description", "Image"};
+        String[] columnNames = {"ID", "Item Name", "Location", "Date Found", "Description"};
 
 
         tableModel = new DefaultTableModel(columnNames, 0) {
@@ -192,8 +192,7 @@ public class FoundItemScreen extends JPanel {
         columnModel.getColumn(1).setPreferredWidth(150);
         columnModel.getColumn(2).setPreferredWidth(100);
         columnModel.getColumn(3).setPreferredWidth(100);
-        columnModel.getColumn(4).setPreferredWidth(300);
-        columnModel.getColumn(5).setPreferredWidth(300);
+        columnModel.getColumn(4).setPreferredWidth(500);
 
 
         DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
