@@ -265,7 +265,7 @@ public class ReportItemScreen extends JPanel {
 
             } else {
 
-                FoundItem item = new FoundItem(itemId, title, description, itemDate, location);
+                FoundItem item = new FoundItem(itemId, title, description, itemDate, location, selectedImage);
                 if (selectedImage != null) {
                     item.setImage(selectedImage);
                 }

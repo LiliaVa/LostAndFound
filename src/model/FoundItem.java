@@ -17,12 +17,13 @@ public class FoundItem {
     }
 
 
-    public FoundItem(int foundItemID, String title, String description, Date dateFound, String location) {
+    public FoundItem(int foundItemID, String title, String description, Date dateFound, String location, byte[] image) {
         this.foundItemID = foundItemID;
         this.title = title;
         this.description = description;
         this.dateFound = dateFound;
         this.location = location;
+        this.image = image;
     }
 
 
