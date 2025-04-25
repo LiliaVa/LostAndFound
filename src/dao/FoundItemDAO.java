@@ -14,7 +14,7 @@ public class FoundItemDAO {
 
 
     public boolean reportFoundItem(FoundItem item) {
-        String sql = "INSERT INTO FoundItems (FoundItemID, F_Title, F_Description, DateFound, F_Location) VALUES (?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO FoundItems (FoundItemID, F_Title, F_Description, DateFound, F_Location, F_Image) VALUES (?, ?, ?, ?, ?, ?)";
         Connection conn = null;
 
         try {
@@ -26,6 +26,7 @@ public class FoundItemDAO {
             pstmt.setString(3, item.getDescription());
             pstmt.setDate(4, DateUtils.convertToSqlDate(item.getDateFound()));
             pstmt.setString(5, item.getLocation());
+            pstmt.setBytes(6, item.getImage());
 
             int affectedRows = pstmt.executeUpdate();
             return affectedRows > 0;
