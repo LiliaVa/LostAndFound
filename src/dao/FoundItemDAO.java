@@ -59,6 +59,7 @@ public class FoundItemDAO {
                 item.setDescription(rs.getString("F_Description"));
                 item.setDateFound(DateUtils.convertFromSqlDate(rs.getDate("DateFound")));
                 item.setLocation(rs.getString("F_Location"));
+                item.setImage(rs.getBytes("F_Image"));
 
                 return item;
             }
@@ -92,6 +93,7 @@ public class FoundItemDAO {
                 item.setDescription(rs.getString("F_Description"));
                 item.setDateFound(DateUtils.convertFromSqlDate(rs.getDate("DateFound")));
                 item.setLocation(rs.getString("F_Location"));
+                item.setImage(rs.getBytes("F_Image"));
 
                 foundItems.add(item);
             }
@@ -131,6 +133,7 @@ public class FoundItemDAO {
                 item.setDescription(rs.getString("F_Description"));
                 item.setDateFound(DateUtils.convertFromSqlDate(rs.getDate("DateFound")));
                 item.setLocation(rs.getString("F_Location"));
+                item.setImage(rs.getBytes("F_Image"));
                 matchingItems.add(item);
             }
 
