@@ -10,6 +10,7 @@ import javax.swing.*;
 import javax.swing.border.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.io.ByteArrayInputStream;
 import java.util.List;
 import javax.imageio.ImageIO;
 import java.io.File;
@@ -362,12 +363,19 @@ public class HomeScreen extends JPanel {
     private ImageIcon getItemImageFromBytes(byte[] imageBytes) {
         if (imageBytes != null && imageBytes.length > 0) {
             try {
-                Image image = ImageIO.read(new java.io.ByteArrayInputStream(imageBytes));
-                return new ImageIcon(image);
+                Image image = ImageIO.read(new ByteArrayInputStream(imageBytes));
+                if (image != null) {
+                    return new ImageIcon(image);
+                } else {
+                    System.err.println("ImageIO.read returned null");
+                }
             } catch (IOException e) {
-                System.err.println("Could not read image bytes.");
+                System.err.println("Could not read image bytes: " + e.getMessage());
             }
+        } else {
+            System.err.println("No image bytes provided.");
         }
         return null;
     }
+
 }

@@ -244,7 +244,7 @@ public class ReportItemScreen extends JPanel {
 
             if (lostRadio.isSelected()) {
 
-                LostItem item = new LostItem(itemId, title, description, itemDate, location);
+                LostItem item = new LostItem(itemId, title, description, itemDate, location, selectedImage);
                 if (selectedImage != null) {
                     item.setImage(selectedImage);
                 }

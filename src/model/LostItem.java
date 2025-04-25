@@ -17,7 +17,7 @@ public class LostItem {
     }
 
 
-    public LostItem(int lostItemID, String title, String description, Date dateLost, String location) {
+    public LostItem(int lostItemID, String title, String description, Date dateLost, String location, byte[] image) {
         this.lostItemID = lostItemID;
         this.title = title;
         this.description = description;
