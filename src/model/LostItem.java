@@ -23,6 +23,7 @@ public class LostItem {
         this.description = description;
         this.dateLost = dateLost;
         this.location = location;
+        this.image = image;
     }
 
 

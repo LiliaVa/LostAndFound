@@ -10,11 +10,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 
+
+
 public class LostItemDAO {
 
 
     public boolean reportLostItem(LostItem item) {
-        String sql = "INSERT INTO LostItems (LostItemID, L_Title, L_Description, DateLost, L_Location) VALUES (?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO LostItems (LostItemID, L_Title, L_Description, DateLost, L_Location, L_Image) VALUES (?, ?, ?, ?, ?, ?)";
         Connection conn = null;
 
         try {
@@ -26,6 +28,7 @@ public class LostItemDAO {
             pstmt.setString(3, item.getDescription());
             pstmt.setDate(4, DateUtils.convertToSqlDate(item.getDateLost()));
             pstmt.setString(5, item.getLocation());
+            pstmt.setBytes(6, item.getImage());
 
             int affectedRows = pstmt.executeUpdate();
             return affectedRows > 0;
