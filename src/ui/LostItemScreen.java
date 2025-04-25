@@ -5,9 +5,13 @@ import model.LostItem;
 import util.DateUtils;
 import util.UIUtils;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.util.List;
 import javax.swing.border.TitledBorder;
 import javax.swing.table.*;
@@ -185,11 +189,11 @@ public class LostItemScreen extends JPanel {
 
 
         TableColumnModel columnModel = itemTable.getColumnModel();
-        columnModel.getColumn(0).setPreferredWidth(30);
+        columnModel.getColumn(0).setPreferredWidth(50);
         columnModel.getColumn(1).setPreferredWidth(150);
         columnModel.getColumn(2).setPreferredWidth(100);
         columnModel.getColumn(3).setPreferredWidth(100);
-        columnModel.getColumn(4).setPreferredWidth(200);
+        columnModel.getColumn(4).setPreferredWidth(500);
 
 
         DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
@@ -367,6 +371,28 @@ public class LostItemScreen extends JPanel {
         JScrollPane scrollPane = new JScrollPane(textArea);
         scrollPane.setPreferredSize(new Dimension(400, 300));
 
+        // Image panel
+        JLabel imageLabel = new JLabel();
+        imageLabel.setHorizontalAlignment(JLabel.CENTER);
+        imageLabel.setPreferredSize(new Dimension(200, 200));
+        byte[] imageData = item.getImage(); // assumes LostItem has getImage()
+
+        if (imageData != null && imageData.length > 0) {
+            try {
+                BufferedImage bufferedImage = ImageIO.read(new ByteArrayInputStream(imageData));
+                if (bufferedImage != null) {
+                    Image scaledImage = bufferedImage.getScaledInstance(200, 200, Image.SCALE_SMOOTH);
+                    imageLabel.setIcon(new ImageIcon(scaledImage));
+                } else {
+                    imageLabel.setText("Image could not be loaded.");
+                }
+            } catch (IOException e) {
+                imageLabel.setText("Image error.");
+                e.printStackTrace();
+            }
+        } else {
+            imageLabel.setText("No image available.");
+        }
 
         JButton editButton = UIUtils.createStyledButton("Edit", new Color(255, 140, 0));
         JButton deleteButton = UIUtils.createStyledButton("Delete", new Color(220, 20, 60));
@@ -378,9 +404,14 @@ public class LostItemScreen extends JPanel {
         buttonPanel.add(deleteButton);
         buttonPanel.add(closeButton);
 
+        JPanel centerPanel = new JPanel(new BorderLayout(10, 10));
+        centerPanel.setBackground(new Color(250, 250, 255));
+        centerPanel.add(imageLabel, BorderLayout.NORTH);
+        centerPanel.add(scrollPane, BorderLayout.CENTER);
+
         JPanel contentPanel = new JPanel(new BorderLayout(0, 10));
         contentPanel.setBackground(new Color(250, 250, 255));
-        contentPanel.add(scrollPane, BorderLayout.CENTER);
+        contentPanel.add(centerPanel, BorderLayout.CENTER);
         contentPanel.add(buttonPanel, BorderLayout.SOUTH);
         contentPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
@@ -388,7 +419,6 @@ public class LostItemScreen extends JPanel {
         dialog.setTitle("Lost Item Details");
         dialog.setModal(true);
         dialog.setContentPane(contentPanel);
-
 
         closeButton.addActionListener(e -> dialog.dispose());
 
@@ -406,6 +436,7 @@ public class LostItemScreen extends JPanel {
         dialog.setLocationRelativeTo(this);
         dialog.setVisible(true);
     }
+
 
 
     public void refreshData() {

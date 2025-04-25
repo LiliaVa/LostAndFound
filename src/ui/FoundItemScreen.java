@@ -188,7 +188,7 @@ public class FoundItemScreen extends JPanel {
 
 
         TableColumnModel columnModel = itemTable.getColumnModel();
-        columnModel.getColumn(0).setPreferredWidth(30);
+        columnModel.getColumn(0).setPreferredWidth(50);
         columnModel.getColumn(1).setPreferredWidth(150);
         columnModel.getColumn(2).setPreferredWidth(100);
         columnModel.getColumn(3).setPreferredWidth(100);
@@ -400,7 +400,6 @@ public class FoundItemScreen extends JPanel {
         imageLabel.setHorizontalAlignment(SwingConstants.CENTER);
         imageLabel.setBorder(BorderFactory.createEmptyBorder(10, 10, 0, 10));
 
-        // Assemble dialog content
         JPanel contentPanel = new JPanel(new BorderLayout(0, 10));
         contentPanel.setBackground(new Color(250, 250, 255));
         contentPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
@@ -408,7 +407,6 @@ public class FoundItemScreen extends JPanel {
         contentPanel.add(scrollPane, BorderLayout.CENTER);
         contentPanel.add(buttonPanel, BorderLayout.SOUTH);
 
-        // Dialog
         JDialog dialog = new JDialog();
         dialog.setTitle("Found Item Details");
         dialog.setModal(true);
