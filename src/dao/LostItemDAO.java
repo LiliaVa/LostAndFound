@@ -59,6 +59,7 @@ public class LostItemDAO {
                 item.setDescription(rs.getString("L_Description"));
                 item.setDateLost(DateUtils.convertFromSqlDate(rs.getDate("DateLost")));
                 item.setLocation(rs.getString("L_Location"));
+                item.setImage(rs.getBytes("L_Image"));
 
                 return item;
             }
@@ -92,6 +93,7 @@ public class LostItemDAO {
                 item.setDescription(rs.getString("L_Description"));
                 item.setDateLost(DateUtils.convertFromSqlDate(rs.getDate("DateLost")));
                 item.setLocation(rs.getString("L_Location"));
+                item.setImage(rs.getBytes("L_Image"));
 
                 lostItems.add(item);
             }
@@ -131,6 +133,7 @@ public class LostItemDAO {
                 item.setDescription(rs.getString("L_Description"));
                 item.setDateLost(DateUtils.convertFromSqlDate(rs.getDate("DateLost")));
                 item.setLocation(rs.getString("L_Location"));
+                item.setImage(rs.getBytes("L_Image"));
                 matchingItems.add(item);
             }
 
