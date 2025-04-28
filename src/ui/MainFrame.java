@@ -28,11 +28,13 @@ public class MainFrame extends JFrame {
     private static final Color LIGHT_HEADER_BG = new Color(70, 130, 180);
     private static final Color LIGHT_TEXT = new Color(0, 0, 0);
     private static final Color LIGHT_COMPONENT_BG = new Color(240, 240, 240);
+    private static final Color LIGHT_BORDER = new Color(200, 200, 200);
 
     private static final Color DARK_BG = new Color(50, 50, 50);
     private static final Color DARK_HEADER_BG = new Color(25, 25, 25);
     private static final Color DARK_TEXT = new Color(220, 220, 220);
     private static final Color DARK_COMPONENT_BG = new Color(80, 80, 80);
+    private static final Color DARK_BORDER = new Color(100, 100, 100);
 
 
     private boolean isDarkMode = false;
@@ -272,6 +274,7 @@ public class MainFrame extends JFrame {
         Color headerColor = darkMode ? DARK_HEADER_BG : LIGHT_HEADER_BG;
         Color textColor = darkMode ? DARK_TEXT : LIGHT_TEXT;
         Color componentBgColor = darkMode ? DARK_COMPONENT_BG : LIGHT_COMPONENT_BG;
+        Color borderColor = darkMode ? DARK_BORDER : LIGHT_BORDER;
 
 
         contentPanel.setBackground(backgroundColor);
@@ -361,5 +364,9 @@ public class MainFrame extends JFrame {
 
     public boolean isDarkModeEnabled() {
         return isDarkMode;
+    }
+
+    public Color getBorderColor() {
+        return isDarkMode ? DARK_BORDER : LIGHT_BORDER;
     }
 }

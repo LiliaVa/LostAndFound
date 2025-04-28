@@ -7,6 +7,7 @@ import model.User;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
+import javax.swing.text.JTextComponent;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
@@ -33,55 +34,55 @@ public class RegistrationScreen extends JPanel {
 
     public RegistrationScreen(MainFrame parent) {
         this.parent = parent;
-        setLayout(new BorderLayout(10, 10));
+        setLayout(new BorderLayout(10, 20));
+        createUI();
+        addEventHandlers();
+    }
 
-
+    private void createUI() {
+        // Title Panel
         JPanel titlePanel = new JPanel();
+        titlePanel.setOpaque(false);
+        titlePanel.setBorder(new EmptyBorder(0, 0, 15, 0));
+
         JLabel titleLabel = new JLabel("Register New Account");
-        titleLabel.setFont(new Font("Arial", Font.BOLD, 20));
+        titleLabel.setHorizontalAlignment(JLabel.CENTER);
         titlePanel.add(titleLabel);
 
+        // Form Panel using a more flexible layout
+        JPanel formPanel = new JPanel();
+        formPanel.setLayout(new BoxLayout(formPanel, BoxLayout.Y_AXIS));
+        formPanel.setBorder(new EmptyBorder(10, 50, 10, 50));
+        formPanel.setOpaque(false);
 
-        JPanel formPanel = new JPanel(new GridLayout(5, 2, 10, 10));
-        formPanel.setBorder(BorderFactory.createEmptyBorder(20, 50, 20, 50));
+        // Name field
+        JPanel namePanel = createFormFieldPanel("Name:", nameField = new JTextField());
 
-        JLabel nameLabel = new JLabel("Name:");
-        nameField = new JTextField(20);
+        // Email field
+        JPanel emailPanel = createFormFieldPanel("Email:", emailField = new JTextField());
 
-        JLabel emailLabel = new JLabel("Email:");
-        emailField = new JTextField(20);
+        // Password field
+        JPanel passwordPanel = createFormFieldPanel("Password:", passwordField = new JPasswordField());
 
-        JLabel passwordLabel = new JLabel("Password:");
-        passwordField = new JPasswordField(20);
+        // Confirm Password field
+        JPanel confirmPanel = createFormFieldPanel("Confirm Password:", confirmPasswordField = new JPasswordField());
 
-        JLabel confirmPasswordLabel = new JLabel("Confirm Password:");
-        confirmPasswordField = new JPasswordField(20);
-
-        registerButton = new JButton("Register");
-        backButton = new JButton("Back to Login");
-
-        JPanel profilePicPanel = new JPanel(new BorderLayout(10, 5));
+        // Profile Picture panel
+        JPanel profilePicPanel = new JPanel(new BorderLayout(20, 5));
         profilePicPanel.setOpaque(false);
         profilePicPanel.setBorder(new EmptyBorder(5, 0, 10, 0));
 
         JLabel profilePicLabel = new JLabel("Profile Picture:");
-        profilePicLabel.setFont(MainFrame.SUBTITLE_FONT);
         profilePicPanel.add(profilePicLabel, BorderLayout.NORTH);
 
+        // Panel for image selection and preview
         JPanel imagePanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 15, 5));
         imagePanel.setOpaque(false);
 
-        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 10));
-        buttonPanel.setOpaque(false);
-        buttonPanel.setBorder(new EmptyBorder(15, 0, 5, 0));
-
         selectImageButton = new JButton("Select Image");
-        selectImageButton.setFont(MainFrame.BUTTON_FONT);
-        selectImageButton.setPreferredSize(MainFrame.STANDARD_BUTTON_SIZE);
         selectImageButton.setFocusPainted(false);
 
         profilePictureLabel = new JLabel("No image selected");
-        profilePictureLabel.setFont(MainFrame.BODY_FONT);
         profilePictureLabel.setPreferredSize(new Dimension(120, 120));
         profilePictureLabel.setBorder(BorderFactory.createLineBorder(parent.getBorderColor(), 1));
         profilePictureLabel.setHorizontalAlignment(JLabel.CENTER);
@@ -90,28 +91,45 @@ public class RegistrationScreen extends JPanel {
         imagePanel.add(profilePictureLabel);
         profilePicPanel.add(imagePanel, BorderLayout.CENTER);
 
-        formPanel.add(nameLabel);
-        formPanel.add(nameField);
-        formPanel.add(emailLabel);
-        formPanel.add(emailField);
-        formPanel.add(passwordLabel);
-        formPanel.add(passwordField);
-        formPanel.add(confirmPasswordLabel);
-        formPanel.add(confirmPasswordField);
-        formPanel.add(backButton);
-        formPanel.add(registerButton);
+        // Button Panel
+        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 10));
+        buttonPanel.setOpaque(false);
+        buttonPanel.setBorder(new EmptyBorder(15, 0, 5, 0));
 
+        backButton = new JButton("Back to Login");
+        backButton.setFocusPainted(false);
 
-        JPanel statusPanel = new JPanel();
+        registerButton = new JButton("Register");
+        registerButton.setFocusPainted(false);
+
+        buttonPanel.add(backButton);
+        buttonPanel.add(registerButton);
+
+        // Status Panel
+        JPanel statusPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        statusPanel.setOpaque(false);
+        statusPanel.setBorder(new EmptyBorder(5, 0, 10, 0));
+
         statusLabel = new JLabel(" ");
-        statusLabel.setForeground(Color.RED);
         statusPanel.add(statusLabel);
 
+        // Add all components to form panel with appropriate spacing
+        formPanel.add(namePanel);
+        formPanel.add(Box.createVerticalStrut(10));
+        formPanel.add(emailPanel);
+        formPanel.add(Box.createVerticalStrut(10));
+        formPanel.add(passwordPanel);
+        formPanel.add(Box.createVerticalStrut(10));
+        formPanel.add(confirmPanel);
+        formPanel.add(Box.createVerticalStrut(15));
+        formPanel.add(profilePicPanel);
+        formPanel.add(Box.createVerticalStrut(15));
+        formPanel.add(buttonPanel);
 
+        // Main layout assembly
         add(titlePanel, BorderLayout.NORTH);
         add(formPanel, BorderLayout.CENTER);
         add(statusPanel, BorderLayout.SOUTH);
-
 
         addEventHandlers();
     }
@@ -204,6 +222,19 @@ public class RegistrationScreen extends JPanel {
                 }
             }
         });
+    }
+
+    private JPanel createFormFieldPanel(String labelText, JTextComponent field) {
+        JPanel panel = new JPanel(new BorderLayout(5, 8));
+        panel.setOpaque(false);
+
+        JLabel label = new JLabel(labelText);
+        field.setPreferredSize(new Dimension(125, 60));
+        field.setMaximumSize(new Dimension(Integer.MAX_VALUE, 60));
+
+        panel.add(label, BorderLayout.NORTH);
+        panel.add(field, BorderLayout.CENTER);
+        return panel;
     }
 
 
