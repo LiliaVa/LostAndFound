@@ -15,6 +15,7 @@ import java.util.List;
 import javax.imageio.ImageIO;
 import java.io.File;
 import java.io.IOException;
+import java.util.stream.Collectors;
 
 
 public class HomeScreen extends JPanel {
@@ -211,30 +212,90 @@ public class HomeScreen extends JPanel {
 
 
     private void setupSearchHandler() {
-        searchButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                String keyword = searchField.getText().trim();
-                if (!keyword.isEmpty()) {
+        // Remove existing listeners to prevent duplicates
+        for (ActionListener al : searchButton.getActionListeners()) {
+            searchButton.removeActionListener(al);
+        }
 
-
-                    JOptionPane.showMessageDialog(parent,
-                            "Searching for: " + keyword,
-                            "Search", JOptionPane.INFORMATION_MESSAGE);
-                }
-            }
-        });
-
+        searchButton.addActionListener(e -> performSearch());
 
         searchField.addKeyListener(new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent e) {
                 if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-                    searchButton.doClick();
+                    performSearch();
                 }
             }
         });
     }
+
+    private void performSearch() {
+        String keyword = searchField.getText().trim().toLowerCase();
+
+        if (keyword.isEmpty()) {
+            refreshData(); // Show all items if search is empty
+            return;
+        }
+
+        recentItemsPanel.removeAll();
+
+        // Get all items (we'll filter them locally)
+        LostItemDAO lostItemDAO = new LostItemDAO();
+        List<LostItem> allLostItems = lostItemDAO.getAllLostItems();
+
+        FoundItemDAO foundItemDAO = new FoundItemDAO();
+        List<FoundItem> allFoundItems = foundItemDAO.getAllFoundItems();
+
+        // Filter items locally
+        List<LostItem> filteredLost = allLostItems.stream()
+                .filter(item -> containsKeyword(item, keyword))
+                .collect(Collectors.toList());
+
+        List<FoundItem> filteredFound = allFoundItems.stream()
+                .filter(item -> containsKeyword(item, keyword))
+                .collect(Collectors.toList());
+
+        // Display results
+        displaySearchResults(filteredLost, filteredFound, keyword);
+
+        recentItemsPanel.revalidate();
+        recentItemsPanel.repaint();
+    }
+
+    // Helper method to check if an item contains the keyword
+    private boolean containsKeyword(LostItem item, String keyword) {
+        return item.getTitle().toLowerCase().contains(keyword) ||
+                item.getDescription().toLowerCase().contains(keyword) ||
+                item.getLocation().toLowerCase().contains(keyword);
+    }
+
+    private boolean containsKeyword(FoundItem item, String keyword) {
+        return item.getTitle().toLowerCase().contains(keyword) ||
+                item.getDescription().toLowerCase().contains(keyword) ||
+                item.getLocation().toLowerCase().contains(keyword);
+    }
+
+    private void displaySearchResults(List<LostItem> lostResults, List<FoundItem> foundResults, String keyword) {
+        for (LostItem item : lostResults) {
+            ImageIcon icon = getItemImageFromBytes(item.getImage());
+            recentItemsPanel.add(createItemCard(item.getTitle(), item.getLocation(),
+                    "Lost on " + item.getFormattedDate(), true, icon));
+        }
+
+        for (FoundItem item : foundResults) {
+            ImageIcon icon = getItemImageFromBytes(item.getImage());
+            recentItemsPanel.add(createItemCard(item.getTitle(), item.getLocation(),
+                    "Found on " + item.getFormattedDate(), false, icon));
+        }
+
+        if (lostResults.isEmpty() && foundResults.isEmpty()) {
+            JLabel noResults = new JLabel("No items found matching '" + keyword + "'");
+            noResults.setFont(new Font("Arial", Font.ITALIC, 14));
+            noResults.setHorizontalAlignment(JLabel.CENTER);
+            recentItemsPanel.add(noResults);
+        }
+    }
+
 
 
     public void refreshData() {

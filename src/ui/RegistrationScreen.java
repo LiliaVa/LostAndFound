@@ -130,8 +130,6 @@ public class RegistrationScreen extends JPanel {
         add(titlePanel, BorderLayout.NORTH);
         add(formPanel, BorderLayout.CENTER);
         add(statusPanel, BorderLayout.SOUTH);
-
-        addEventHandlers();
     }
 
 
